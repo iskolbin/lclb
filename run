@@ -1,0 +1,38 @@
+#!/bin/bash
+
+LUA="lua5.1 lua5.2 luajit-2.0.4 luajit"
+
+function init() {
+	if [ ! -f input5000000.txt ]; then
+		luajit fasta.lua 5000000 > input5000000.txt
+	fi
+	if [ ! -f input25000000.txt ]; then
+		luajit fasta.lua 25000000 > input25000000.txt	
+	fi
+}
+
+function time_test() {
+	dt="$( TIMEFORMAT='%U';time ( $1 $2 $3 ) 2>&1 1>/dev/null )"
+	wait
+	echo "${2%.lua} $dt" >> result.txt
+}
+
+function run_tests() {
+	echo $1 >> result.txt	
+	time_test $1 fasta.lua 25000000
+	time_test $1 nbody.lua 50000000
+	time_test $1 mandelbrot.lua 16000
+	time_test $1 regexdna.lua < input5000000.txt
+	time_test $1 revcomp.lua < input25000000.txt
+	time_test $1 knucleotide.lua < input25000000.txt
+	time_test $1 binarytrees.lua 20
+	time_test $1 spectralnorm.lua 5500
+	time_test $1 fannkuchredux.lua 12
+	echo "" >> result.txt
+}
+
+rm result.txt
+$(init)
+for lua in $LUA; do
+	$(run_tests $lua)
+done
