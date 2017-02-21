@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LUA="lua5.1 lua5.2 luajit-2.0.4 luajit"
+LUA="lua5.1 lua5.2 lua5.3 luajit-2.0.4 luajit"
 
 function init() {
 	if [ ! -f input5000000.txt ]; then
@@ -18,7 +18,7 @@ function time_test() {
 }
 
 function run_tests() {
-	echo $1 >> result.txt	
+	echo $($1 -e "print(jit and jit.version or _VERSION)") >> result.txt	
 	time_test $1 fasta.lua 25000000
 	time_test $1 nbody.lua 50000000
 	time_test $1 mandelbrot.lua 16000
