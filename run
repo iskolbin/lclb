@@ -34,5 +34,7 @@ function run_tests() {
 rm result.txt
 $(init)
 for lua in $LUA; do
-	$(run_tests $lua)
+	if [ ! -z $(which $lua) ]; then
+		$(run_tests $lua)
+	fi
 done
